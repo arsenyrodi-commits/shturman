@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Штурман — твой навигатор в мире автоспорта</title>
+  <meta name="description" content="Агрегатор автоспортивных событий России: ралли, дрифт, кольцо и мото. Календарь гонок, билеты и понятное объяснение для новичка — всё в одном месте." />
+  <meta property="og:title" content="Штурман — твой навигатор в мире автоспорта" />
+  <meta property="og:description" content="Все гонки России в одном месте: дата, трасса, билеты и гид для новичка." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <!-- ===================== HERO ===================== -->
+  <header class="theme-dark relative overflow-hidden" style="padding-top:calc(var(--nav-h) + 40px)">
+    <div class="grid-lines"></div>
+    <div class="absolute -top-40 -right-40 w-[640px] h-[640px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(255,77,20,.22), transparent 62%)"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-40 pointer-events-none" style="background:radial-gradient(60% 100% at 50% 100%, rgba(255,77,20,.10), transparent)"></div>
+
+    <div class="wrap relative pb-16 md:pb-24 pt-10 md:pt-16">
+      <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-12 items-center">
+        <div>
+          <div class="eyebrow reveal">Агрегатор автоспорта · Россия</div>
+          <h1 class="display text-cream mt-6 reveal reveal-d1" style="font-size:clamp(44px,8.4vw,112px)">
+            Твой навигатор<br>в мире <span style="color:var(--orange)">автоспорта</span>
+          </h1>
+          <p class="text-cream-dim mt-7 max-w-xl text-[18px] reveal reveal-d2">
+            Все гонки России — <b class="text-cream">ралли, дрифт, кольцо и мото</b> — в одном месте.
+            Дата, трасса, билеты и понятное объяснение для тех, кто ещё ни разу не был на гонках.
+          </p>
+          <div class="flex flex-wrap gap-3 mt-9 reveal reveal-d3">
+            <a class="btn btn-primary btn-lg" href="calendar.html">Смотреть календарь <span class="inline-flex w-[18px] h-[18px]" data-arrow></span></a>
+            <a class="btn btn-ghost-d btn-lg" href="app.html">О приложении</a>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-7 gap-y-2 mt-9 text-cream-faint text-[14px] reveal reveal-d4">
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:var(--c-rally)"></span> Бесплатные события</span>
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:var(--c-circuit)"></span> Карта автодрома</span>
+            <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:var(--c-moto)"></span> Гид для новичка</span>
+          </div>
+        </div>
+
+        <!-- floating next-event card -->
+        <div class="reveal reveal-d2">
+          <div class="text-cream-faint text-[13px] mb-3 flex items-center gap-2" style="font-family:var(--font-head);font-weight:700;letter-spacing:.12em;text-transform:uppercase"><span class="w-2 h-2 rounded-full pulse" style="background:var(--orange)"></span> Ближайшее событие</div>
+          <div id="hero-next" class="floaty"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- marquee -->
+    <div class="marquee py-5 border-t border-b" style="border-color:var(--line-dark);background:var(--ink-2)">
+      <div class="marquee-track text-cream-faint" style="font-family:var(--font-display);text-transform:uppercase;font-size:18px">
+        <span>RDS GP</span><span style="color:var(--orange)">●</span><span>РСКГ</span><span style="color:var(--orange)">●</span><span>Чемпионат России по ралли</span><span style="color:var(--orange)">●</span><span>REC</span><span style="color:var(--orange)">●</span><span>Мотокросс</span><span style="color:var(--orange)">●</span><span>Time Attack</span><span style="color:var(--orange)">●</span>
+        <span>RDS GP</span><span style="color:var(--orange)">●</span><span>РСКГ</span><span style="color:var(--orange)">●</span><span>Чемпионат России по ралли</span><span style="color:var(--orange)">●</span><span>REC</span><span style="color:var(--orange)">●</span><span>Мотокросс</span><span style="color:var(--orange)">●</span><span>Time Attack</span><span style="color:var(--orange)">●</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== STATS ===================== -->
+  <section class="theme-dark" style="background:var(--ink)">
+    <div class="wrap py-14 md:py-20">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6">
+        <div class="reveal">
+          <div class="display text-cream" style="font-size:clamp(40px,6vw,68px)"><span data-count="70" data-suffix="+">0</span></div>
+          <div class="text-cream-dim mt-2 text-[15px]">событий за сезон 2026</div>
+        </div>
+        <div class="reveal reveal-d1">
+          <div class="display text-cream" style="font-size:clamp(40px,6vw,68px)"><span data-count="16">0</span></div>
+          <div class="text-cream-dim mt-2 text-[15px]">автодромов России</div>
+        </div>
+        <div class="reveal reveal-d2">
+          <div class="display text-cream" style="font-size:clamp(40px,6vw,68px)"><span data-count="11">0</span></div>
+          <div class="text-cream-dim mt-2 text-[15px]">дисциплин автоспорта</div>
+        </div>
+        <div class="reveal reveal-d3">
+          <div class="display" style="font-size:clamp(40px,6vw,68px);color:var(--orange)"><span data-count="65">0</span> млн</div>
+          <div class="text-cream-dim mt-2 text-[15px]">онлайн-аудитория, которую теряет офлайн</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== UPCOMING EVENTS ===================== -->
+  <section class="theme-light section">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-5 mb-10">
+        <div>
+          <div class="eyebrow reveal" style="color:var(--orange)">Афиша сезона</div>
+          <h2 class="reveal reveal-d1 mt-4" style="font-size:clamp(30px,4.6vw,54px)">Ближайшие гонки</h2>
+        </div>
+        <a class="link-arrow text-orange reveal reveal-d1" href="calendar.html" style="font-size:16px">Весь календарь <span data-arrow></span></a>
+      </div>
+      <div id="featured-events" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </div>
+  </section>
+
+  <!-- ===================== DISCIPLINES ===================== -->
+  <section class="theme-dark section relative overflow-hidden">
+    <div class="grid-lines" style="opacity:.6"></div>
+    <div class="wrap relative">
+      <div class="max-w-2xl mb-12">
+        <div class="eyebrow reveal">Разберись за минуту</div>
+        <h2 class="text-cream reveal reveal-d1 mt-4" style="font-size:clamp(30px,4.6vw,54px)">Четыре дисциплины,<br>с которых начинают</h2>
+        <p class="text-cream-dim mt-5 text-[17px] reveal reveal-d2">Не нужно быть фанатом, чтобы получить удовольствие. Выбирай тип гонки — и мы объясним, что там происходит и куда идти.</p>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <a class="card card-dark group reveal p-7 flex flex-col" href="calendar.html?discipline=drift" style="--c:var(--c-drift)">
+          <div class="w-12 h-12 rounded-full mb-5 flex items-center justify-center" style="background:color-mix(in srgb,var(--c-drift) 18%,transparent);color:var(--c-drift)"><span class="w-6 h-6 inline-flex" data-ic="flag"></span></div>
+          <h3 class="text-cream text-[22px] mb-2">Дрифт</h3>
+          <p class="text-cream-dim text-[15px] flex-1">Управляемое скольжение боком. Судят не скорость, а стиль, угол и зрелищность.</p>
+          <span class="link-arrow mt-5 text-[14px]" style="color:var(--c-drift)">Смотреть события <span data-arrow></span></span>
+        </a>
+        <a class="card card-dark group reveal reveal-d1 p-7 flex flex-col" href="calendar.html?discipline=circuit">
+          <div class="w-12 h-12 rounded-full mb-5 flex items-center justify-center" style="background:color-mix(in srgb,var(--c-circuit) 18%,transparent);color:var(--c-circuit)"><span class="w-6 h-6 inline-flex" data-ic="clock"></span></div>
+          <h3 class="text-cream text-[22px] mb-2">Кольцо</h3>
+          <p class="text-cream-dim text-[15px] flex-1">Классика трека: круг за кругом, борьба на торможениях. Сюда же — эндуранс.</p>
+          <span class="link-arrow mt-5 text-[14px]" style="color:var(--c-circuit)">Смотреть события <span data-arrow></span></span>
+        </a>
+        <a class="card card-dark group reveal reveal-d2 p-7 flex flex-col" href="calendar.html?discipline=rally">
+          <div class="w-12 h-12 rounded-full mb-5 flex items-center justify-center" style="background:color-mix(in srgb,var(--c-rally) 18%,transparent);color:var(--c-rally)"><span class="w-6 h-6 inline-flex" data-ic="pin"></span></div>
+          <h3 class="text-cream text-[22px] mb-2">Ралли</h3>
+          <p class="text-cream-dim text-[15px] flex-1">Гонка против времени по дорогам. Пилот, штурман и «легенда» каждого поворота.</p>
+          <span class="link-arrow mt-5 text-[14px]" style="color:var(--c-rally)">Смотреть события <span data-arrow></span></span>
+        </a>
+        <a class="card card-dark group reveal reveal-d3 p-7 flex flex-col" href="calendar.html?discipline=moto">
+          <div class="w-12 h-12 rounded-full mb-5 flex items-center justify-center" style="background:color-mix(in srgb,var(--c-moto) 18%,transparent);color:var(--c-moto)"><span class="w-6 h-6 inline-flex" data-ic="spark"></span></div>
+          <h3 class="text-cream text-[22px] mb-2">Мото</h3>
+          <p class="text-cream-dim text-[15px] flex-1">Скорость на двух колёсах: шоссейно-кольцевые, мотокросс и супермото.</p>
+          <span class="link-arrow mt-5 text-[14px]" style="color:var(--c-moto)">Смотреть события <span data-arrow></span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY / VALUE ===================== -->
+  <section class="theme-light section">
+    <div class="wrap">
+      <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-14 items-center">
+        <div>
+          <div class="eyebrow reveal" style="color:var(--orange)">Почему Штурман</div>
+          <h2 class="reveal reveal-d1 mt-4" style="font-size:clamp(30px,4.6vw,52px)">Не просто список дат.<br>Полный гид по гонке.</h2>
+          <p class="text-inktext-dim mt-5 text-[17px] reveal reveal-d2 max-w-md">
+            Расписания разбросаны по десяткам сайтов, а на карточках нет ни цены, ни билетов, ни объяснений. Мы собрали всё в одном месте — и добавили то, чего нет у других.
+          </p>
+          <a class="btn btn-dark btn-lg mt-7 reveal reveal-d2" href="calendar.html">Открыть календарь <span class="inline-flex w-[18px] h-[18px]" data-arrow></span></a>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div class="card p-6 reveal">
+            <div class="w-11 h-11 rounded-full bg-orange-100 text-orange flex items-center justify-center mb-4"><span class="w-6 h-6 inline-flex" data-ic="calendar"></span></div>
+            <h3 class="text-[19px] mb-2">Единый календарь</h3>
+            <p class="text-inktext-dim text-[15px]">Ралли, дрифт, кольцо и мото в одной ленте с фильтрами по типу, региону и цене.</p>
+          </div>
+          <div class="card p-6 reveal reveal-d1">
+            <div class="w-11 h-11 rounded-full bg-orange-100 text-orange flex items-center justify-center mb-4"><span class="w-6 h-6 inline-flex" data-ic="ticket"></span></div>
+            <h3 class="text-[19px] mb-2">Всё на карточке</h3>
+            <p class="text-inktext-dim text-[15px]">Дата, трасса, тип, платно или бесплатно и ссылка на билеты — сразу, без перехода по сайтам.</p>
+          </div>
+          <div class="card p-6 reveal reveal-d2">
+            <div class="w-11 h-11 rounded-full bg-orange-100 text-orange flex items-center justify-center mb-4"><span class="w-6 h-6 inline-flex" data-ic="spark"></span></div>
+            <h3 class="text-[19px] mb-2">Понятно новичку</h3>
+            <p class="text-inktext-dim text-[15px]">Что это за гонка, чем заняться зрителю и интересный факт — для каждого события.</p>
+          </div>
+          <div class="card p-6 reveal reveal-d3">
+            <div class="w-11 h-11 rounded-full bg-orange-100 text-orange flex items-center justify-center mb-4"><span class="w-6 h-6 inline-flex" data-ic="pin"></span></div>
+            <h3 class="text-[19px] mb-2">Навигация на месте</h3>
+            <p class="text-inktext-dim text-[15px]">В приложении — карта автодрома, расписание и маршрут, чтобы не потеряться на событии.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== APP PROMO ===================== -->
+  <section class="theme-dark section relative overflow-hidden">
+    <div class="absolute top-1/2 -translate-y-1/2 -left-40 w-[520px] h-[520px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(255,77,20,.16), transparent 62%)"></div>
+    <div class="wrap relative grid lg:grid-cols-2 gap-14 items-center">
+      <div class="order-2 lg:order-1">
+        <div class="eyebrow reveal">Приложение на событии</div>
+        <h2 class="text-cream reveal reveal-d1 mt-4" style="font-size:clamp(30px,4.6vw,52px)">Не теряй навигацию<br>во время гонки</h2>
+        <p class="text-cream-dim mt-5 text-[17px] reveal reveal-d2 max-w-md">На автодроме легко растеряться: где трибуна, паддок, фудкорт, во сколько финал. Мини-приложение «Штурман» открывается по QR на входе — и всё в одном экране.</p>
+        <ul class="mt-8 space-y-4">
+          <li class="flex items-start gap-4 reveal"><span class="w-9 h-9 rounded-full flex-none flex items-center justify-center" style="background:color-mix(in srgb,var(--orange) 18%,transparent);color:var(--orange)"><span class="w-5 h-5 inline-flex" data-ic="pin"></span></span><div><b class="text-cream">Карта автодрома</b><div class="text-cream-dim text-[15px]">Трибуны, зоны, маршрут — с кликабельными метками.</div></div></li>
+          <li class="flex items-start gap-4 reveal reveal-d1"><span class="w-9 h-9 rounded-full flex-none flex items-center justify-center" style="background:color-mix(in srgb,var(--orange) 18%,transparent);color:var(--orange)"><span class="w-5 h-5 inline-flex" data-ic="clock"></span></span><div><b class="text-cream">Расписание дня</b><div class="text-cream-dim text-[15px]">Тренировки, квалификация, финал и награждение.</div></div></li>
+          <li class="flex items-start gap-4 reveal reveal-d2"><span class="w-9 h-9 rounded-full flex-none flex items-center justify-center" style="background:color-mix(in srgb,var(--orange) 18%,transparent);color:var(--orange)"><span class="w-5 h-5 inline-flex" data-ic="flag"></span></span><div><b class="text-cream">Карточки пилотов</b><div class="text-cream-dim text-[15px]">Кто есть кто на трассе и за кого болеть.</div></div></li>
+        </ul>
+        <a class="btn btn-primary btn-lg mt-9 reveal reveal-d2" href="app.html">Подробнее о приложении <span class="inline-flex w-[18px] h-[18px]" data-arrow></span></a>
+      </div>
+
+      <!-- phone mockup -->
+      <div class="order-1 lg:order-2 flex justify-center reveal reveal-d1">
+        <div class="floaty" style="width:300px;max-width:80vw">
+          <div class="rounded-[42px] p-3 shadow-2xl" style="background:linear-gradient(160deg,#2a2a32,#15151a);border:1px solid #34343f">
+            <div class="rounded-[32px] overflow-hidden" style="background:var(--ink-2);aspect-ratio:9/19">
+              <div class="px-5 pt-6 pb-4" style="background:linear-gradient(180deg,#1f1f27,var(--ink-2))">
+                <div class="flex items-center gap-2 text-cream" style="font-family:var(--font-display);font-size:15px"><span class="w-5 h-5 inline-flex">●</span>Moscow Raceway</div>
+                <div class="text-cream-faint text-[12px] mt-1">RDS GP · Этап 1 · 25 апр</div>
+              </div>
+              <div class="px-4 space-y-3">
+                <div class="rounded-2xl p-3" style="background:var(--ink-3)"><div class="text-cream text-[13px] font-bold mb-2">Карта трассы</div><div class="h-24 rounded-xl relative overflow-hidden" style="background:linear-gradient(135deg,#23232b,#15151a)"><div class="speedlines"></div><div class="absolute inset-0 flex items-center justify-center" style="color:var(--orange)"><span class="w-8 h-8 inline-flex" data-ic="pin"></span></div></div></div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="rounded-2xl p-3" style="background:var(--ink-3)"><div class="text-cream-faint text-[11px]">Сейчас</div><div class="text-cream text-[13px] font-bold mt-1">Квалификация</div></div>
+                  <div class="rounded-2xl p-3" style="background:var(--ink-3)"><div class="text-cream-faint text-[11px]">Финал</div><div class="text-cream text-[13px] font-bold mt-1">15:30</div></div>
+                </div>
+                <div class="rounded-2xl p-3 flex items-center justify-between" style="background:var(--orange)"><span class="text-white text-[13px] font-bold">Смотреть трансляцию</span><span class="w-4 h-4 inline-flex text-white" data-arrow></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BLOG ===================== -->
+  <section class="theme-light section">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-5 mb-10">
+        <div>
+          <div class="eyebrow reveal" style="color:var(--orange)">База знаний</div>
+          <h2 class="reveal reveal-d1 mt-4" style="font-size:clamp(30px,4.6vw,54px)">Автоспорт для новичка</h2>
+        </div>
+        <a class="link-arrow text-orange reveal reveal-d1" href="blog.html" style="font-size:16px">Все статьи <span data-arrow></span></a>
+      </div>
+      <div id="home-articles" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA ===================== -->
+  <section class="theme-light pb-24">
+    <div class="wrap">
+      <div class="relative overflow-hidden rounded-2xl px-7 py-14 md:p-16 text-center reveal" style="background:linear-gradient(120deg,var(--orange),var(--orange-700))">
+        <div class="speedlines" style="opacity:.25"></div>
+        <h2 class="display text-white relative" style="font-size:clamp(30px,5.4vw,64px)">Готов к первой гонке?</h2>
+        <p class="text-white/90 mt-4 max-w-xl mx-auto relative text-[17px]">Открой календарь, выбери событие рядом — и приезжай. Штурман подскажет всё остальное.</p>
+        <div class="flex flex-wrap gap-3 justify-center mt-8 relative">
+          <a class="btn btn-light btn-lg" href="calendar.html">Смотреть календарь <span class="inline-flex w-[18px] h-[18px]" data-arrow></span></a>
+          <a class="btn btn-lg" href="app.html" style="background:rgba(0,0,0,.18);color:#fff;border:1.5px solid rgba(255,255,255,.4)">О приложении</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-root"></div>
+
+  <script src="assets/data/events.js"></script>
+  <script src="assets/data/articles.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

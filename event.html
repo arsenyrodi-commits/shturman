@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Событие — Штурман</title>
+  <meta name="description" content="Страница автоспортивного события: дата, трасса, тип гонок, билеты и гид для зрителя." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+</head>
+<body>
+  <div id="nav-root"></div>
+  <main id="event-root">
+    <div class="theme-dark" style="padding-top:calc(var(--nav-h) + 80px)">
+      <div class="wrap pb-20">
+        <div class="skeleton" style="height:34px;width:180px"></div>
+        <div class="skeleton mt-6" style="height:64px;width:70%"></div>
+        <div class="skeleton mt-4" style="height:24px;width:40%"></div>
+      </div>
+    </div>
+  </main>
+  <div id="footer-root"></div>
+
+  <script src="assets/data/events.js"></script>
+  <script src="assets/data/articles.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/event.js"></script>
+</body>
+</html>

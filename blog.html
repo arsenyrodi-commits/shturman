@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>База знаний — Штурман</title>
+  <meta name="description" content="Автоспорт для новичка: что такое дрифт, ралли, кольцо и мото, как смотреть гонки и что взять с собой на автодром." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <header class="theme-dark relative overflow-hidden" style="padding-top:calc(var(--nav-h) + 36px)">
+    <div class="grid-lines"></div>
+    <div class="absolute -top-32 right-10 w-[480px] h-[480px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(255,77,20,.16), transparent 62%)"></div>
+    <div class="wrap relative pb-12 pt-6">
+      <div class="eyebrow reveal">База знаний фаната</div>
+      <h1 class="display text-cream mt-5 reveal reveal-d1" style="font-size:clamp(38px,6.6vw,82px)">Автоспорт<br>для новичка</h1>
+      <p class="text-cream-dim mt-4 max-w-xl text-[17px] reveal reveal-d2">Объясняем простым языком: что происходит на гонке, за чем следить и как получить максимум удовольствия от первого выезда.</p>
+    </div>
+  </header>
+
+  <section class="theme-light section pt-10">
+    <div class="wrap">
+      <div id="cat-chips" class="flex flex-wrap gap-2 mb-4"></div>
+      <div id="blog-list"></div>
+    </div>
+  </section>
+
+  <div id="footer-root"></div>
+
+  <script src="assets/data/events.js"></script>
+  <script src="assets/data/articles.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/blog.js"></script>
+</body>
+</html>

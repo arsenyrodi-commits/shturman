@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Календарь гонок 2026 — Штурман</title>
+  <meta name="description" content="Полный календарь автоспортивных событий России на 2026 год: ралли, дрифт, кольцо и мото. Фильтры по дисциплине, региону и цене." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="assets/js/tw-config.js"></script>
+</head>
+<body>
+  <div id="nav-root"></div>
+
+  <!-- page header -->
+  <header class="theme-dark relative overflow-hidden" style="padding-top:calc(var(--nav-h) + 36px)">
+    <div class="grid-lines"></div>
+    <div class="absolute -top-32 right-0 w-[520px] h-[520px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(255,77,20,.18), transparent 62%)"></div>
+    <div class="wrap relative pb-12 pt-6">
+      <div class="eyebrow reveal">Сезон 2026 · Россия</div>
+      <h1 class="display text-cream mt-5 reveal reveal-d1" style="font-size:clamp(38px,6.6vw,82px)">Календарь гонок</h1>
+      <p class="text-cream-dim mt-4 max-w-xl text-[17px] reveal reveal-d2">Все события в одной ленте. Фильтруй по дисциплине, региону и цене — и находи, куда поехать в ближайшие выходные.</p>
+    </div>
+  </header>
+
+  <!-- filters -->
+  <div class="theme-light sticky z-30" id="filter-bar" style="top:84px;background:rgba(245,244,241,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-light)">
+    <div class="wrap py-4">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-3">
+          <div class="relative flex-1">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-inktext-faint inline-flex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg></span>
+            <input id="search" class="field pl-12" type="search" placeholder="Поиск по названию, серии, трассе или городу" aria-label="Поиск событий" />
+          </div>
+          <div class="flex gap-3">
+            <select id="region-select" class="field lg:w-56" aria-label="Регион"></select>
+            <select id="month-select" class="field lg:w-44" aria-label="Месяц"></select>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <div id="disc-chips" class="flex flex-wrap gap-2"></div>
+          <span class="w-px h-6 mx-1 hidden sm:inline-block" style="background:var(--line-light)"></span>
+          <div id="price-chips" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- results -->
+  <section class="theme-light" style="min-height:60vh">
+    <div class="wrap py-10">
+      <div class="flex items-center justify-between mb-7">
+        <div id="result-count" class="text-inktext-dim text-[15px]"></div>
+        <button id="reset-filters" class="chip" style="display:none">Сбросить фильтры</button>
+      </div>
+      <div id="cal-results" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <div id="empty-state" class="hidden text-center py-20">
+        <div class="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center bg-orange-100 text-orange"><span class="w-8 h-8 inline-flex" data-ic="calendar"></span></div>
+        <h3 class="text-[22px] mb-2">Ничего не нашлось</h3>
+        <p class="text-inktext-dim">Попробуйте смягчить фильтры или сбросить их.</p>
+        <button class="btn btn-dark mt-6" onclick="document.getElementById('reset-filters').click()">Сбросить фильтры</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-root"></div>
+
+  <script src="assets/data/events.js"></script>
+  <script src="assets/data/articles.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/calendar.js"></script>
+</body>
+</html>
