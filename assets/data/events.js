@@ -213,6 +213,11 @@
     }
   ];
 
+  // Изображения — локальные файлы. Положи фото в assets/img/events/<id>.jpg
+  // (необязательно: <id>-2.jpg и <id>-3.jpg для галереи на странице события).
+  // Пока файла нет — показывается фирменный градиент по дисциплине.
+  events.forEach(function (ev) { ev.image = 'assets/img/events/' + ev.id + '.jpg'; });
+
   // отсортируем по дате
   events.sort(function (a, b) { return a.dateStart < b.dateStart ? -1 : 1; });
 

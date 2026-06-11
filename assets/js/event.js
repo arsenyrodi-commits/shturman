@@ -17,9 +17,9 @@ window.PAGE_INIT = function () {
 
   document.title = ev.title + ' — Штурман';
   var d = SH.disc(ev.discipline);
-  function variant(url, sfx) { return url.replace(/\/seed\/([^/]+)\//, '/seed/$1-' + sfx + '/').replace('/1280/860', '/1100/740'); }
-  var img2 = variant(ev.image, 'b');
-  var img3 = variant(ev.image, 'c');
+  function variant(url, sfx) { return url.replace(/\.jpg$/i, '-' + sfx + '.jpg'); }
+  var img2 = variant(ev.image, '2');
+  var img3 = variant(ev.image, '3');
   var FB = "this.style.display='none';this.parentNode.classList.add('img-failed')";
   var mapUrl = 'https://yandex.ru/maps/?text=' + encodeURIComponent(ev.track + ' ' + ev.city);
 

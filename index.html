@@ -19,6 +19,9 @@
 
   <!-- ===================== HERO ===================== -->
   <header class="theme-dark relative overflow-hidden" style="padding-top:calc(var(--nav-h) + 40px)">
+    <!-- Фон-видео hero. Просто положи файл assets/video/hero.mp4 — скрипт ниже сам подключит
+         его и заменит сетку. Пока файла нет, показывается тёмный фон с сеткой (как сейчас). -->
+    <div class="hero-bg" id="hero-bg" data-video="assets/video/hero.mp4" hidden></div>
     <div class="grid-lines"></div>
     <div class="absolute -top-40 -right-40 w-[640px] h-[640px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(255,77,20,.22), transparent 62%)"></div>
     <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-40 pointer-events-none" style="background:radial-gradient(60% 100% at 50% 100%, rgba(255,77,20,.10), transparent)"></div>
@@ -79,8 +82,8 @@
           <div class="text-cream-dim mt-2 text-[15px]">дисциплин автоспорта</div>
         </div>
         <div class="reveal reveal-d3">
-          <div class="display" style="font-size:clamp(40px,6vw,68px);color:var(--orange)"><span data-count="65">0</span> млн</div>
-          <div class="text-cream-dim mt-2 text-[15px]">онлайн-аудитория, которую теряет офлайн</div>
+          <div class="display" style="font-size:clamp(40px,6vw,68px);color:var(--orange)"><span data-count="9">0</span></div>
+          <div class="text-cream-dim mt-2 text-[15px]">регионов России в календаре</div>
         </div>
       </div>
     </div>

@@ -134,6 +134,9 @@
     }
   ];
 
+  // Обложки — локальные файлы. Положи фото в assets/img/articles/<slug>.jpg
+  articles.forEach(function (a) { a.cover = 'assets/img/articles/' + a.slug + '.jpg'; });
+
   articles.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
 
   window.SHTURMAN = window.SHTURMAN || {};
