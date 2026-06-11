@@ -25,17 +25,14 @@ function initHeroVideo() {
   if (!bg) return;
   var src = bg.getAttribute('data-video');
   if (!src || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  fetch(src, { method: 'HEAD' }).then(function (r) {
-    if (!r.ok) return;
-    var v = document.createElement('video');
-    v.className = 'hero-video';
-    v.autoplay = true; v.muted = true; v.loop = true; v.preload = 'auto';
-    v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
-    var s = document.createElement('source'); s.src = src; s.type = 'video/mp4';
-    v.appendChild(s);
-    var ov = document.createElement('div'); ov.className = 'hero-video-overlay';
-    bg.appendChild(v); bg.appendChild(ov);
-    bg.hidden = false;
-    if (v.play) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
-  }).catch(function () {});
+  var v = document.createElement('video');
+  v.className = 'hero-video';
+  v.autoplay = true; v.muted = true; v.loop = true; v.preload = 'auto';
+  v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
+  var s = document.createElement('source'); s.src = src; s.type = 'video/mp4';
+  v.appendChild(s);
+  var ov = document.createElement('div'); ov.className = 'hero-video-overlay';
+  bg.appendChild(v); bg.appendChild(ov);
+  bg.hidden = false;
+  if (v.play) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
 }

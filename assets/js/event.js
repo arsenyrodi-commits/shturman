@@ -47,6 +47,10 @@ window.PAGE_INIT = function () {
       '</div></section>'
     : '';
 
+  var mobileCTA = ev.free
+    ? '<div class="mobile-cta"><div><div class="mc-price">Вход свободный</div><div class="mc-sub">' + ev.track + '</div></div><a class="btn btn-ghost-d btn-sm" href="' + ev.officialUrl + '" target="_blank" rel="noopener">Подробности</a></div>'
+    : '<div class="mobile-cta"><div><div class="mc-price">от ' + ev.priceFrom.toLocaleString('ru-RU') + ' ₽</div><div class="mc-sub">' + ev.track + '</div></div><a class="btn btn-primary btn-sm" href="' + ev.ticketUrl + '" target="_blank" rel="noopener">Билеты ' + I.arrow + '</a></div>';
+
   root.innerHTML =
     /* ---------- HERO ---------- */
     '<section class="theme-dark relative overflow-hidden">' +
@@ -107,6 +111,7 @@ window.PAGE_INIT = function () {
               '<div class="media media-' + ev.discipline + ' rounded-xl" style="aspect-ratio:4/3"><img src="' + img2 + '" alt="Атмосфера события" loading="lazy" onerror="' + FB + '"></div>' +
               '<div class="media media-' + ev.discipline + ' rounded-xl" style="aspect-ratio:4/3"><img src="' + img3 + '" alt="Атмосфера события" loading="lazy" onerror="' + FB + '"></div>' +
             '</div>' +
+            (ev.photoCredit ? '<div class="text-inktext-faint text-[12.5px] mt-3">Фото: ' + ev.photoCredit + '</div>' : '') +
           '</div>' +
         '</div>' +
 
@@ -132,7 +137,9 @@ window.PAGE_INIT = function () {
       '</div>' +
     '</div></section>' +
 
-    relatedHTML;
+    relatedHTML + mobileCTA;
+
+  document.body.classList.add('has-mobile-cta');
 
   // share
   var share = document.getElementById('share-btn');

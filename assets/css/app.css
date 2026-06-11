@@ -279,3 +279,87 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 800; letter-spacing
 .hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; }
 .hero-video-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,14,17,.45), rgba(14,14,17,.82)); }
 @media (prefers-reduced-motion: reduce) { .hero-video { display: none; } }
+
+/* ============================================================
+   MOBILE — самостоятельная мобильная вёрстка (не сжатие десктопа).
+   Решения под палец: крупные тап-зоны, тап-фидбэк вместо hover,
+   свайп-фильтры, липкая кнопка действия, свой типографический ритм.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* инпуты ≥16px — iOS не зумит при фокусе */
+  .field { font-size: 16px; }
+
+  /* контейнер и вертикальный ритм */
+  .wrap { padding-inline: 18px; }
+  .section { padding-block: 56px; }
+
+  /* типографика */
+  .display { line-height: .96; }
+  .eyebrow { font-size: 11.5px; letter-spacing: .14em; }
+  .eyebrow::before { width: 18px; }
+
+  /* тач-взаимодействие: тап-фидбэк вместо hover, без «прилипшего» hover */
+  .card { transition: transform .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease); }
+  .card:hover { transform: none; }
+  .card:hover .media img { transform: none; }
+  .card:active { transform: scale(.985); }
+  .btn:active { transform: scale(.97); }
+  .chip:active { transform: scale(.95); }
+  .link-arrow:active { opacity: .6; }
+  .floaty { animation: none !important; }
+
+  /* кнопки чуть компактнее по высоте */
+  .btn-lg { padding: 15px 22px; }
+
+  /* NAV — плотнее под телефон */
+  .nav { top: 10px; }
+  .nav-inner { padding: 9px 10px 9px 18px; }
+  .brand { font-size: 18px; }
+  .brand .mark { width: 26px; height: 26px; }
+
+  /* HERO — управляемый размер заголовка на всех страницах */
+  header .display { font-size: clamp(38px, 12vw, 58px) !important; }
+  .marquee-track { font-size: 15px; }
+
+  /* CALENDAR — фильтры свайпом по горизонтали, а не переносом в 4 ряда */
+  #disc-chips, #price-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-inline: -18px;
+    padding-inline: 18px;
+    scroll-snap-type: x proximity;
+  }
+  #disc-chips::-webkit-scrollbar, #price-chips::-webkit-scrollbar { display: none; }
+  #disc-chips .chip, #price-chips .chip { flex: 0 0 auto; scroll-snap-align: start; }
+  #region-select, #month-select { flex: 1 1 0; min-width: 0; }
+  /* липкий фильтр-бар встаёт под плавающую шапку */
+  #filter-bar { top: 80px !important; }
+
+  /* запас снизу под липкую кнопку события */
+  body.has-mobile-cta { padding-bottom: 80px; }
+}
+
+/* мобильная липкая кнопка действия (рендерится всегда, видна только на телефоне) */
+.mobile-cta { display: none; }
+@media (max-width: 768px) {
+  .mobile-cta {
+    display: flex; align-items: center; gap: 12px;
+    position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 45;
+    background: rgba(14,14,17,.92); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border: 1px solid rgba(244,241,234,.12);
+    border-radius: var(--r-pill); padding: 10px 10px 10px 20px;
+    box-shadow: 0 14px 40px -12px rgba(0,0,0,.6);
+  }
+  .mobile-cta .mc-price { color: var(--cream); font-family: var(--font-head); font-weight: 800; font-size: 16px; line-height: 1.15; white-space: nowrap; }
+  .mobile-cta .mc-sub { color: var(--cream-faint); font-size: 11.5px; margin-top: 1px; }
+  .mobile-cta .btn { margin-left: auto; flex: 0 0 auto; }
+}
+
+/* очень узкие экраны */
+@media (max-width: 380px) {
+  header .display { font-size: 33px !important; }
+  .btn { font-size: 14px; }
+  .wrap { padding-inline: 15px; }
+}
