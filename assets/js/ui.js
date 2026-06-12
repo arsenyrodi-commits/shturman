@@ -74,8 +74,8 @@
           '<div class="speedlines"></div>' +
           '<div class="absolute top-3 left-3 flex gap-2">' + SH.discTag(ev.discipline) + '</div>' +
           '<div class="absolute top-3 right-3">' + SH.priceTag(ev) + '</div>' +
-          '<div class="absolute bottom-3 left-3 flex items-center gap-2 text-cream" style="font-family:var(--font-head);font-weight:700;font-size:14px">' +
-            '<span class="inline-flex w-5 h-5">' + ICON.calendar + '</span>' + SH.formatDate(ev.dateStart, ev.dateEnd) +
+          '<div class="card-date absolute bottom-3 left-3">' +
+            '<span class="inline-flex">' + ICON.calendar + '</span>' + SH.formatDate(ev.dateStart, ev.dateEnd) +
           '</div>' +
         '</div>' +
         '<div class="p-5 flex flex-col flex-1">' +

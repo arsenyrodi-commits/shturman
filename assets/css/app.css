@@ -141,6 +141,19 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 800; letter-spacing
 .card-dark { background: var(--ink-2); border-color: var(--line-dark); }
 .card-dark:hover { border-color: #3a3a45; box-shadow: 0 22px 50px -20px rgba(0,0,0,.6); }
 
+/* светлая карточка — всегда тёмный текст, даже внутри тёмной секции
+   (иначе заголовок floating-карточки «Ближайшее событие» наследует кремовый и не виден) */
+.card:not(.card-dark) { color: var(--ink-text); }
+
+/* дата поверх фото карточки — читаемая плашка на любом снимке */
+.card-date {
+  display: inline-flex; align-items: center; gap: 7px; line-height: 1;
+  font-family: var(--font-head); font-weight: 700; font-size: 14px; color: #fff;
+  padding: 7px 11px; border-radius: var(--r-pill);
+  background: rgba(14,14,17,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.card-date svg { width: 15px; height: 15px; }
+
 /* media box with discipline gradient fallback + graceful image */
 .media { position: relative; overflow: clip; background: linear-gradient(135deg, #23232b, #131318); }
 .media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(8,8,12,.55)); pointer-events: none; }
