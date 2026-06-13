@@ -104,18 +104,39 @@
       var rg = ctx.createRadialGradient(w * 0.86, h * 0.12, 0, w * 0.86, h * 0.12, w * 0.5);
       rg.addColorStop(0, 'rgba(255,77,20,.34)'); rg.addColorStop(1, 'rgba(255,77,20,0)');
       ctx.fillStyle = rg; ctx.fillRect(0, 0, w, h);
+
+      var pad = Math.round(w * 0.055);
       // знак слева
-      var m = h * 0.5, mx = w * 0.06, my = (h - m) / 2;
+      var m = Math.round(h * 0.46), mx = pad, my = Math.round((h - m) / 2);
       drawMark(ctx, mx, my, m, true);
-      // тексты
-      var tx = mx + m + w * 0.03;
+
+      // текстовый блок справа от знака, с подгонкой под доступную ширину
+      var tx = mx + m + Math.round(w * 0.035);
+      var availW = w - tx - pad;
+
+      var WORD = 'ШТУРМАН', TAG = 'Навигатор зрителя на гонках';
+      var ws = Math.round(h * 0.27);
+      ctx.font = '400 ' + ws + 'px "Russo One", sans-serif';
+      var wordW = ctx.measureText(WORD).width;
+      if (wordW > availW) ws = Math.floor(ws * availW / wordW);
+
+      var ts = Math.round(h * 0.11);
+      ctx.font = '600 ' + ts + 'px Manrope, sans-serif';
+      var tagW = ctx.measureText(TAG).width;
+      if (tagW > availW) ts = Math.floor(ts * availW / tagW);
+
+      // вертикальное центрирование блока (слово + подпись)
+      var gap = Math.round(ts * 0.7);
+      var top = Math.round((h - (ws + gap + ts)) / 2);
+
       ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = '#F4F1EA';
-      ctx.font = '400 ' + (h * 0.26).toFixed(0) + 'px "Russo One", sans-serif';
-      ctx.fillText('ШТУРМАН', tx, h * 0.5);
+      ctx.font = '400 ' + ws + 'px "Russo One", sans-serif';
+      ctx.fillText(WORD, tx, top + Math.round(ws * 0.82));
+
       ctx.fillStyle = '#B8B4AB';
-      ctx.font = '600 ' + (h * 0.105).toFixed(0) + 'px Manrope, sans-serif';
-      ctx.fillText('Навигатор зрителя на гонках', tx, h * 0.5 + h * 0.16);
+      ctx.font = '600 ' + ts + 'px Manrope, sans-serif';
+      ctx.fillText(TAG, tx, top + ws + gap + Math.round(ts * 0.82));
     }
 
     var iconCanvas = document.getElementById('cIcon');
