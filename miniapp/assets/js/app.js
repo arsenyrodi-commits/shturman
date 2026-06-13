@@ -24,7 +24,10 @@
     flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4M4 4h13l-2 4 2 4H4"/></svg>',
     arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>',
-    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3.2 1.2 4 2.3.8-1.1 2-2.3 4-2.3 3.5 0 5 3.5 3.5 6.5C19 16.5 12 21 12 21Z"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>'
   };
 
   /* ---------- даты ---------- */
@@ -53,12 +56,17 @@
   function isDone(actId) { return !!doneMap[doneKey(actId)]; }
 
   /* ---------- состояние ---------- */
-  var state = { tab: 'calendar', stageId: nextId, champId: null, knCat: 'Все', hideRead: false, articleSlug: null, raceSection: 'map', ticket: loadVal(TICKET_KEY, 'Все') };
+  var PROFILE_KEY = 'sh_profile_v1';
+  var profile = loadVal(PROFILE_KEY, { onboarded: false, discs: [], visited: {}, wishlist: {}, early: 0, night: 0 });
+  function saveProfile() { save(PROFILE_KEY, profile); }
+
+  var state = { tab: 'calendar', stageId: nextId, champId: null, knCat: 'Все', hideRead: false, articleSlug: null, raceSection: 'map', ticket: loadVal(TICKET_KEY, 'Все'), profView: 'main', achTab: 'available' };
 
   var TABS = [
     { id: 'calendar', label: 'Календарь', icon: 'calendar' },
     { id: 'race', label: 'Навигация', icon: 'pin' },
-    { id: 'knowledge', label: 'База знаний', icon: 'book' }
+    { id: 'knowledge', label: 'База знаний', icon: 'book' },
+    { id: 'profile', label: 'Профиль', icon: 'user' }
   ];
   var KIND_LABEL = { zone: 'Зона', show: 'Активности', kids: 'Детям', track: 'Трек и экскурсии', stand: 'Трибуна', service: 'Сервис', parking: 'Парковка', thrill: 'Аттракцион', inactive: 'Не используется' };
   var MAP = null; // данные карты текущего этапа (зоны/декор/viewBox)
@@ -372,6 +380,148 @@
       '<div class="reader-body">' + renderBody(a.body) + '</div>';
   }
 
+  /* ======================= ПРОФИЛЬ + ДОСТИЖЕНИЯ ======================= */
+  function allEvents() {
+    var out = [];
+    CHAMPS.forEach(function (c) {
+      champEvents(c).forEach(function (e, i) {
+        out.push({ key: c.id + ':' + (e.id || i), disc: c.disc, name: e.name || displayName(e), date: e.date, dateLabel: e.dateLabel, track: e.track });
+      });
+    });
+    return out;
+  }
+  function evByKey() { var m = {}; allEvents().forEach(function (e) { m[e.key] = e; }); return m; }
+
+  var ACHS = [
+    { id: 'first-race', title: 'Первый заезд', desc: 'Побывал на первой гонке' },
+    { id: 'regular', title: 'Завсегдатай', desc: 'Посетил 10 гонок' },
+    { id: 'explorer', title: 'Всё успел', desc: 'Отметил все активности этапа' },
+    { id: 'drift', title: 'Дрифт-фан', desc: 'Был на дрифт-гонке' },
+    { id: 'circuit', title: 'Кольцевик', desc: 'Был на кольцевой гонке' },
+    { id: 'rally', title: 'Раллист', desc: 'Был на ралли' },
+    { id: 'moto', title: 'Мотофан', desc: 'Был на мотогонке' },
+    { id: 'early', title: 'Ранняя пташка', desc: 'Отметился ранним утром' },
+    { id: 'night', title: 'Полуночник', desc: 'Отметился поздним вечером' },
+    { id: 'bookworm', title: 'Знаток', desc: 'Прочитал все статьи' }
+  ];
+  function earnedSet() {
+    var visited = profile.visited || {}, keys = Object.keys(visited), em = evByKey(), discs = {};
+    keys.forEach(function (k) { var e = em[k]; if (e) discs[e.disc] = true; });
+    var allAct = false;
+    if (window.STAGE1 && STAGE1.activities && STAGE1.activities.length) {
+      REC.stages.forEach(function (s) {
+        if (STAGE1.activities.every(function (a) { return doneMap[s.id + '|' + a.id]; })) allAct = true;
+      });
+    }
+    var allRead = arts.length > 0 && arts.every(function (a) { return readMap[a.slug]; });
+    var n = keys.length;
+    return {
+      'first-race': n >= 1, 'regular': n >= 10, 'explorer': allAct,
+      'drift': !!discs.drift, 'circuit': !!discs.circuit, 'rally': !!discs.rally, 'moto': !!discs.moto,
+      'early': !!profile.early, 'night': !!profile.night, 'bookworm': allRead
+    };
+  }
+
+  function userName() {
+    var u = window.SH_VK && SH_VK.user;
+    return u && u.first_name ? (u.first_name + (u.last_name ? ' ' + u.last_name : '')) : 'Гость';
+  }
+  function userAva() { return (window.SH_VK && SH_VK.user && SH_VK.user.photo_100) ? SH_VK.user.photo_100 : ''; }
+
+  function profileScreen() {
+    if (state.profView === 'ach') return achievementsScreen();
+    if (state.profView === 'onboard' || !profile.onboarded) return onboardingScreen();
+    return profileMain();
+  }
+
+  function onboardingScreen() {
+    var DLIST = [['drift', 'Дрифт'], ['circuit', 'Кольцо'], ['rally', 'Ралли'], ['moto', 'Мото']];
+    var discPills = DLIST.map(function (d) {
+      var on = (profile.discs || []).indexOf(d[0]) >= 0;
+      return '<button class="pill' + (on ? ' active' : '') + '" data-onb-disc="' + d[0] + '">' + d[1] + '</button>';
+    }).join('');
+    var rows = '';
+    CHAMPS.forEach(function (c) {
+      rows += '<div class="onb-grouptitle" style="color:' + discColor(c.disc) + '">' + c.name + '</div>';
+      champEvents(c).forEach(function (e, i) {
+        var key = c.id + ':' + (e.id || i);
+        var v = !!(profile.visited && profile.visited[key]);
+        var w = !!(profile.wishlist && profile.wishlist[key]);
+        rows += '<div class="onb-row">' +
+          '<div class="onb-ev"><div class="onb-evname">' + (e.name || displayName(e)) + '</div>' +
+          '<div class="onb-evmeta">' + (e.dateLabel || fmtDate(e.date)) + ' · ' + e.track + '</div></div>' +
+          '<button class="onb-tg v' + (v ? ' on' : '') + '" data-onb-visit="' + key + '" aria-label="Был"><span class="ico">' + ICON.check + '</span></button>' +
+          '<button class="onb-tg w' + (w ? ' on' : '') + '" data-onb-wish="' + key + '" aria-label="Хочу"><span class="ico">' + ICON.heart + '</span></button>' +
+        '</div>';
+      });
+    });
+    return '<div class="race-head"><div class="eyebrow">Профиль</div>' +
+        '<h1 class="screen-title">' + (profile.onboarded ? 'Мои предпочтения' : 'Привет!') + '</h1>' +
+        '<div class="race-meta">' + (profile.onboarded ? 'Отметь, где был и что хочешь посетить.' : 'Пара отметок, и профиль оживёт. Всё сохранится у тебя.') + '</div></div>' +
+      '<div class="onb-block"><h4>Любимые дисциплины</h4><div class="pills onb-pills">' + discPills + '</div></div>' +
+      '<div class="onb-block"><h4>Где был и что хочешь</h4>' +
+        '<div class="onb-legend"><span class="onb-tg v on sm"><span class="ico">' + ICON.check + '</span></span> был&ensp;&ensp;<span class="onb-tg w on sm"><span class="ico">' + ICON.heart + '</span></span> хочу</div>' +
+        rows + '</div>' +
+      '<button class="onb-done" data-onb-done="1">Готово</button>';
+  }
+
+  function statBox(n, label) { return '<div class="statbox"><div class="statn">' + n + '</div><div class="statl">' + label + '</div></div>'; }
+
+  function profileMain() {
+    var ava = userAva();
+    var doneCount = Object.keys(doneMap).length, readCount = Object.keys(readMap).length, visitedCount = Object.keys(profile.visited || {}).length;
+    var es = earnedSet();
+    var earnedList = ACHS.filter(function (a) { return es[a.id]; });
+    var em = evByKey();
+    function evLine(map) {
+      var keys = Object.keys(map || {});
+      if (!keys.length) return '<div class="prof-empty">Пока пусто</div>';
+      return '<div class="prof-evs">' + keys.map(function (k) {
+        var e = em[k]; if (!e) return '';
+        return '<div class="prof-ev"><span class="ev-dot" style="background:' + discColor(e.disc) + '"></span>' + e.name + ' <span class="prof-evtrack">· ' + e.track + '</span></div>';
+      }).join('') + '</div>';
+    }
+    var discChips = (profile.discs || []).length
+      ? profile.discs.map(function (d) { return '<span class="dchip" style="--disc:' + discColor(d) + '">' + discLabel(d) + '</span>'; }).join('')
+      : '<span class="prof-empty">Не выбраны</span>';
+    var achPreview = earnedList.length
+      ? '<div class="ach-prevrow">' + earnedList.slice(0, 6).map(function (a) {
+          return '<img class="ach-prev" src="assets/img/achievements/ach-' + a.id + '.png" alt="' + a.title + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">';
+        }).join('') + '</div>'
+      : '<div class="prof-empty">Пока нет. Отмечай активности и читай статьи!</div>';
+
+    return '<div class="prof-card">' +
+        (ava ? '<img class="prof-ava" src="' + ava + '" alt="">' : '<div class="prof-ava ph"><span class="ico">' + ICON.user + '</span></div>') +
+        '<div class="prof-id"><div class="prof-name">' + userName() + '</div><div class="prof-sub">Билет: ' + state.ticket + '</div></div>' +
+        '<button class="prof-edit" data-onb-edit="1">Изменить</button>' +
+      '</div>' +
+      '<div class="prof-stats">' + statBox(visitedCount, 'гонок') + statBox(doneCount, 'активностей') + statBox(readCount, 'статей') + '</div>' +
+      '<div class="prof-sec"><h4>Любимые дисциплины</h4><div class="dchips">' + discChips + '</div></div>' +
+      '<div class="prof-sec"><div class="prof-sechead"><h4>Достижения</h4><button class="link-mini" data-prof-ach="1">Все ' + earnedList.length + '/' + ACHS.length + '<span class="ico ico-15">' + ICON.arrow + '</span></button></div>' + achPreview + '</div>' +
+      '<div class="prof-sec"><h4>Был на гонках</h4>' + evLine(profile.visited) + '</div>' +
+      '<div class="prof-sec"><h4>Хочу посетить</h4>' + evLine(profile.wishlist) + '</div>';
+  }
+
+  function achievementsScreen() {
+    var es = earnedSet(), tab = state.achTab;
+    var seg = '<div class="seg">' +
+      '<button class="seg-btn' + (tab === 'earned' ? ' active' : '') + '" data-ach-tab="earned">Полученные</button>' +
+      '<button class="seg-btn' + (tab === 'available' ? ' active' : '') + '" data-ach-tab="available">Доступные</button></div>';
+    var list = ACHS.filter(function (a) { return tab === 'earned' ? es[a.id] : !es[a.id]; });
+    var grid = list.length
+      ? '<div class="ach-grid">' + list.map(function (a) {
+          var earned = !!es[a.id];
+          return '<div class="ach-card' + (earned ? ' earned' : ' locked') + '">' +
+            '<div class="ach-ico"><img src="assets/img/achievements/ach-' + a.id + '.png" alt="" loading="lazy" onerror="this.style.opacity=0">' +
+            (earned ? '' : '<span class="ach-lock"><span class="ico">' + ICON.lock + '</span></span>') + '</div>' +
+            '<div class="ach-title">' + a.title + '</div><div class="ach-desc">' + a.desc + '</div></div>';
+        }).join('') + '</div>'
+      : '<div class="stub" style="margin-top:8px"><span class="ico">' + ICON.flag + '</span><h3>' + (tab === 'earned' ? 'Пока ничего' : 'Всё собрано!') + '</h3><p>' + (tab === 'earned' ? 'Отмечай активности на гонках и читай статьи, и достижения появятся здесь.' : 'Ты собрал все достижения. Красавчик!') + '</p></div>';
+    return '<button class="back-chip" data-prof-back="1"><span class="ico ico-15">' + ICON.back + '</span>Профиль</button>' +
+      '<div class="race-head" style="margin-bottom:14px"><div class="eyebrow">Профиль</div><h1 class="screen-title">Достижения</h1></div>' +
+      seg + grid;
+  }
+
   /* ---------- общая заглушка ---------- */
   function stub(icon, title, text, soon) {
     return '<div class="stub"><span class="ico">' + ICON[icon] + '</span><h3>' + title + '</h3><p>' + text + '</p>' +
@@ -382,6 +532,7 @@
   function screenHtml() {
     if (state.tab === 'race') return raceScreen();
     if (state.tab === 'knowledge') return knowledgeScreen();
+    if (state.tab === 'profile') return profileScreen();
     return calendarScreen();
   }
   function render() {
@@ -431,6 +582,12 @@
     if (doneMap[k]) delete doneMap[k]; else doneMap[k] = 1;
     save(DONE_KEY, doneMap);
     var on = !!doneMap[k];
+    if (on) {
+      var hh = new Date().getHours(); var pc = false;
+      if (hh < 9 && !profile.early) { profile.early = 1; pc = true; }
+      if ((hh >= 22 || hh < 5) && !profile.night) { profile.night = 1; pc = true; }
+      if (pc) saveProfile();
+    }
     chk.classList.toggle('on', on);
     var row = chk.closest('.act'); if (row) row.classList.toggle('on', on);
     updateProg();
@@ -446,8 +603,16 @@
     var rs = e.target.closest('[data-race-sec]'); if (rs) { state.raceSection = rs.getAttribute('data-race-sec'); render(); return; }
     var chb = e.target.closest('[data-champ-back]'); if (chb) { state.champId = null; render(); return; }
     var chp = e.target.closest('[data-champ]'); if (chp) { state.champId = chp.getAttribute('data-champ'); render(); return; }
+    var od = e.target.closest('[data-onb-disc]'); if (od) { var dk = od.getAttribute('data-onb-disc'); var arr = profile.discs || (profile.discs = []); var ix = arr.indexOf(dk); if (ix >= 0) arr.splice(ix, 1); else arr.push(dk); od.classList.toggle('active'); saveProfile(); return; }
+    var ov = e.target.closest('[data-onb-visit]'); if (ov) { var vk = ov.getAttribute('data-onb-visit'); profile.visited = profile.visited || {}; if (profile.visited[vk]) delete profile.visited[vk]; else profile.visited[vk] = 1; ov.classList.toggle('on'); saveProfile(); return; }
+    var ow = e.target.closest('[data-onb-wish]'); if (ow) { var wk = ow.getAttribute('data-onb-wish'); profile.wishlist = profile.wishlist || {}; if (profile.wishlist[wk]) delete profile.wishlist[wk]; else profile.wishlist[wk] = 1; ow.classList.toggle('on'); saveProfile(); return; }
+    var odn = e.target.closest('[data-onb-done]'); if (odn) { profile.onboarded = true; state.profView = 'main'; saveProfile(); render(); return; }
+    var oe = e.target.closest('[data-onb-edit]'); if (oe) { state.profView = 'onboard'; render(); return; }
+    var pa = e.target.closest('[data-prof-ach]'); if (pa) { state.profView = 'ach'; render(); return; }
+    var pb = e.target.closest('[data-prof-back]'); if (pb) { state.profView = 'main'; render(); return; }
+    var at = e.target.closest('[data-ach-tab]'); if (at) { state.achTab = at.getAttribute('data-ach-tab'); render(); return; }
     var stg = e.target.closest('[data-stage]'); if (stg) { openStage(stg.getAttribute('data-stage')); return; }
-    var tb = e.target.closest('[data-tab]'); if (tb) { var tbid = tb.getAttribute('data-tab'); if (tbid === 'calendar' && tb.classList.contains('tab')) state.champId = null; setTab(tbid); return; }
+    var tb = e.target.closest('[data-tab]'); if (tb) { var tbid = tb.getAttribute('data-tab'); if (tb.classList.contains('tab')) { if (tbid === 'calendar') state.champId = null; if (tbid === 'profile') state.profView = 'main'; } setTab(tbid); return; }
   });
   document.addEventListener('change', function (e) {
     var el = e.target.closest('[data-toggle="hideread"]'); if (el) { state.hideRead = el.checked; render(); }
@@ -466,6 +631,8 @@
   function handleBack() {
     if (document.getElementById('sheetRoot')) { closeZoneSheet(); return true; }
     if (state.tab === 'knowledge' && state.articleSlug) { state.articleSlug = null; render(); return true; }
+    if (state.tab === 'profile' && state.profView === 'ach') { state.profView = 'main'; render(); return true; }
+    if (state.tab === 'profile' && state.profView === 'onboard' && profile.onboarded) { state.profView = 'main'; render(); return true; }
     if (state.tab !== 'calendar') { setTab('calendar'); return true; }
     if (state.champId) { state.champId = null; render(); return true; }
     return false;
@@ -486,9 +653,10 @@
     if (!window.SH_VK) return;
     SH_VK.init(function () { if (SH_VK.user) render(); });
     if (SH_VK.inVK && SH_VK.storageGet) {
-      SH_VK.storageGet([READ_KEY, DONE_KEY, TICKET_KEY]).then(function (v) {
+      SH_VK.storageGet([READ_KEY, DONE_KEY, TICKET_KEY, PROFILE_KEY]).then(function (v) {
         var ch = mergeFlags(readMap, v[READ_KEY]) | mergeFlags(doneMap, v[DONE_KEY]);
         if (v[TICKET_KEY]) { try { var tk = JSON.parse(v[TICKET_KEY]); if (tk && tk !== state.ticket) { state.ticket = tk; ch = 1; } } catch (e) {} }
+        if (v[PROFILE_KEY]) { try { var p = JSON.parse(v[PROFILE_KEY]); if (p && typeof p === 'object' && (p.onboarded || !profile.onboarded)) { profile = p; save(PROFILE_KEY, profile); ch = 1; } } catch (e) {} }
         if (ch) { save(READ_KEY, readMap); save(DONE_KEY, doneMap); render(); }
       }).catch(function () {});
     }
