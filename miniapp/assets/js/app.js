@@ -66,6 +66,7 @@
   function actById(d, id) { for (var i = 0; i < d.activities.length; i++) { if (d.activities[i].id === id) return d.activities[i]; } return null; }
   function zoneById(d, id) { for (var i = 0; i < d.zones.length; i++) { if (d.zones[i].id === id) return d.zones[i]; } return null; }
   function displayName(s) { return s.name || ('Этап ' + s.stage); }
+  function stageDate(s) { return s.dateLabel || fmtDate(s.date); }
   function calStatus(s) {
     if (s.id === nextId) return { cls: 'next', label: 'Ближайший' };
     if (dObj(s.date) < today) return { cls: 'past', label: 'Завершён' };
@@ -104,7 +105,7 @@
         '<div class="stage-body">' +
           '<div class="stage-title">' + displayName(s) + '</div>' +
           '<div class="stage-series">' + REC.series + '</div>' +
-          '<div class="meta"><span class="ico ico-15">' + ICON.calendar + '</span>' + fmtDate(s.date) + '</div>' +
+          '<div class="meta"><span class="ico ico-15">' + ICON.calendar + '</span>' + stageDate(s) + '</div>' +
           '<div class="meta"><span class="ico ico-15">' + ICON.pin + '</span>' + s.track + ' · ' + s.city + '</div>' +
           '<div class="meta"><span class="ico ico-15">' + ICON.flag + '</span>' + s.type + '</div>' +
           '<div class="stage-cta">Открыть навигацию <span class="ico ico-15">' + ICON.arrow + '</span></div>' +
@@ -143,7 +144,7 @@
         '<button class="back-chip" data-tab="calendar"><span class="ico ico-15">' + ICON.back + '</span>Все этапы</button>' +
         '<div class="eyebrow">Навигация по гонке</div>' +
         '<h1 class="screen-title">' + displayName(s) + '</h1>' +
-        '<div class="race-meta">' + fmtDate(s.date) + ' · ' + s.track + '</div></div>' +
+        '<div class="race-meta">' + stageDate(s) + ' · ' + s.track + '</div></div>' +
       ticketBar + note + seg + content + usefulBlock(d);
   }
 
