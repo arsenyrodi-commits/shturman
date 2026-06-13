@@ -443,3 +443,35 @@ body {
 .ticket-bar { margin-bottom: 14px; }
 .ticket-lbl { display: block; font-family: var(--font-head); font-weight: 800; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 9px; }
 .ticket-bar .pills.tpills { margin: 0 -16px; padding: 2px 16px 4px; }
+
+/* ============================================================
+   КАЛЕНДАРЬ: список гонок (серий) + этапы не-REC
+   ============================================================ */
+.champ-list { display: flex; flex-direction: column; gap: 12px; }
+.champ-card {
+  display: flex; align-items: stretch;
+  background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  text-decoration: none; color: inherit;
+  box-shadow: 0 6px 18px -14px rgba(20, 20, 30, .45);
+  -webkit-tap-highlight-color: transparent; transition: transform .12s ease;
+}
+.champ-card:active { transform: scale(.99); }
+.champ-bar { width: 6px; flex: none; background: var(--disc); }
+.champ-body { flex: 1; min-width: 0; padding: 13px 8px 13px 14px; }
+.champ-top { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.champ-disc { font-family: var(--font-head); font-weight: 800; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--disc); }
+.champ-nav { font-family: var(--font-head); font-weight: 800; font-size: 10px; letter-spacing: .03em; text-transform: uppercase; color: #fff; background: var(--orange); padding: 2px 7px; border-radius: 20px; }
+.champ-name { font-family: var(--font-head); font-weight: 800; font-size: 16px; line-height: 1.2; color: var(--ink); }
+.champ-meta { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
+.champ-arrow { width: 18px; height: 18px; color: var(--text-faint); align-self: center; margin-right: 14px; flex: none; }
+
+.ev-list { display: flex; flex-direction: column; gap: 10px; }
+.ev-card {
+  display: flex; align-items: center; gap: 13px;
+  background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--disc);
+  border-radius: 14px; padding: 12px 14px;
+}
+.ev-date { font-family: var(--font-head); font-weight: 800; font-size: 12.5px; color: var(--disc); white-space: nowrap; min-width: 88px; }
+.ev-name { font-family: var(--font-head); font-weight: 700; font-size: 14.5px; line-height: 1.25; color: var(--ink); }
+.ev-place { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
+.ev-place .ico { width: 13px; height: 13px; color: var(--disc); }

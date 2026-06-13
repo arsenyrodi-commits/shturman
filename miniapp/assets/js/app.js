@@ -13,6 +13,7 @@
   var REC = window.REC || { stages: [] };
   var stages = REC.stages;
   var arts = (window.SHTURMAN && window.SHTURMAN.articles) || [];
+  var CHAMPS = window.CHAMPS || [];
 
   /* ---------- иконки ---------- */
   var ICON = {
@@ -52,7 +53,7 @@
   function isDone(actId) { return !!doneMap[doneKey(actId)]; }
 
   /* ---------- состояние ---------- */
-  var state = { tab: 'calendar', stageId: nextId, knCat: 'Все', hideRead: false, articleSlug: null, raceSection: 'map', ticket: loadVal(TICKET_KEY, 'Все') };
+  var state = { tab: 'calendar', stageId: nextId, champId: null, knCat: 'Все', hideRead: false, articleSlug: null, raceSection: 'map', ticket: loadVal(TICKET_KEY, 'Все') };
 
   var TABS = [
     { id: 'calendar', label: 'Календарь', icon: 'calendar' },
@@ -93,31 +94,93 @@
       '<nav class="tabs">' + tabs + '</nav></header>';
   }
 
-  /* ======================= КАЛЕНДАРЬ ======================= */
+  /* ======================= КАЛЕНДАРЬ (ГОНКИ) ======================= */
+  var DISC = {
+    drift: { c: '#FF5A1F', label: 'Дрифт' },
+    circuit: { c: '#2E8BFF', label: 'Кольцо' },
+    rally: { c: '#19B36B', label: 'Ралли' },
+    moto: { c: '#B26BFF', label: 'Мото' }
+  };
+  function discColor(k) { return (DISC[k] || {}).c || '#888'; }
+  function discLabel(k) { return (DISC[k] || {}).label || k; }
+  function plural(n, one, few, many) {
+    var d = n % 10, h = n % 100;
+    if (d === 1 && h !== 11) return one;
+    if (d >= 2 && d <= 4 && (h < 10 || h >= 20)) return few;
+    return many;
+  }
+  function champById(id) { for (var i = 0; i < CHAMPS.length; i++) { if (CHAMPS[i].id === id) return CHAMPS[i]; } return null; }
+  function champEvents(c) { return c.useREC ? ((window.REC && REC.stages) || []) : (c.events || []); }
+  function nextEventLabel(c) {
+    var list = champEvents(c).slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    for (var i = 0; i < list.length; i++) { if (dObj(list[i].date) >= today) return list[i].dateLabel || fmtDate(list[i].date); }
+    return list.length ? (list[list.length - 1].dateLabel || fmtDate(list[list.length - 1].date)) : '';
+  }
+
+  function recStageCard(s) {
+    var st = calStatus(s);
+    var num = (s.stage < 10 ? '0' : '') + s.stage;
+    return '<a class="stage-card' + (st.cls === 'next' ? ' is-next' : '') + '" data-stage="' + s.id + '">' +
+      '<div class="stage-media">' +
+        '<img class="stage-img" src="../assets/img/stages/' + s.id + '.jpg" alt="" loading="lazy" onerror="' + IMG_FALLBACK + '">' +
+        '<span class="stage-badge">Этап ' + s.stage + '</span>' +
+        '<span class="stage-status s-' + st.cls + '">' + st.label + '</span>' +
+        '<span class="stage-num">' + num + '</span></div>' +
+      '<div class="stage-body">' +
+        '<div class="stage-title">' + displayName(s) + '</div>' +
+        '<div class="stage-series">' + REC.series + '</div>' +
+        '<div class="meta"><span class="ico ico-15">' + ICON.calendar + '</span>' + stageDate(s) + '</div>' +
+        '<div class="meta"><span class="ico ico-15">' + ICON.pin + '</span>' + s.track + ' · ' + s.city + '</div>' +
+        '<div class="meta"><span class="ico ico-15">' + ICON.flag + '</span>' + s.type + '</div>' +
+        '<div class="stage-cta">Открыть навигацию <span class="ico ico-15">' + ICON.arrow + '</span></div>' +
+      '</div></a>';
+  }
+
   function calendarScreen() {
-    var cards = stages.map(function (s) {
-      var st = calStatus(s);
-      var num = (s.stage < 10 ? '0' : '') + s.stage;
-      return '<a class="stage-card' + (st.cls === 'next' ? ' is-next' : '') + '" data-stage="' + s.id + '">' +
-        '<div class="stage-media">' +
-          '<img class="stage-img" src="../assets/img/stages/' + s.id + '.jpg" alt="" loading="lazy" onerror="' + IMG_FALLBACK + '">' +
-          '<span class="stage-badge">Этап ' + s.stage + '</span>' +
-          '<span class="stage-status s-' + st.cls + '">' + st.label + '</span>' +
-          '<span class="stage-num">' + num + '</span></div>' +
-        '<div class="stage-body">' +
-          '<div class="stage-title">' + displayName(s) + '</div>' +
-          '<div class="stage-series">' + REC.series + '</div>' +
-          '<div class="meta"><span class="ico ico-15">' + ICON.calendar + '</span>' + stageDate(s) + '</div>' +
-          '<div class="meta"><span class="ico ico-15">' + ICON.pin + '</span>' + s.track + ' · ' + s.city + '</div>' +
-          '<div class="meta"><span class="ico ico-15">' + ICON.flag + '</span>' + s.type + '</div>' +
-          '<div class="stage-cta">Открыть навигацию <span class="ico ico-15">' + ICON.arrow + '</span></div>' +
-        '</div></a>';
-    }).join('');
+    if (state.champId) { var c = champById(state.champId); if (c) return champEventsScreen(c); state.champId = null; }
+    return champListScreen();
+  }
+
+  function champCard(c) {
+    var dc = discColor(c.disc);
+    var cnt = champEvents(c).length;
+    return '<a class="champ-card" data-champ="' + c.id + '" style="--disc:' + dc + '">' +
+      '<div class="champ-bar"></div>' +
+      '<div class="champ-body">' +
+        '<div class="champ-top"><span class="champ-disc">' + discLabel(c.disc) + '</span>' + (c.nav ? '<span class="champ-nav">Навигация</span>' : '') + '</div>' +
+        '<div class="champ-name">' + c.name + '</div>' +
+        '<div class="champ-meta">' + cnt + ' ' + plural(cnt, 'этап', 'этапа', 'этапов') + ' · ближайший ' + nextEventLabel(c) + '</div>' +
+      '</div>' +
+      '<span class="ico champ-arrow">' + ICON.arrow + '</span></a>';
+  }
+
+  function champListScreen() {
     return '<div class="cal-hero">' +
-        '<div class="eyebrow">Сезон ' + REC.season + ' · ' + stages.length + ' этапов</div>' +
-        '<h1 class="cal-title">Russian Endurance<br>Challenge</h1>' +
-        '<p class="cal-sub">Выбери этап - внутри карта автодрома, активности и расписание.</p></div>' +
-      '<div class="stage-list">' + cards + '</div>';
+        '<div class="eyebrow">Календарь · сезон ' + (window.REC ? REC.season : 2026) + '</div>' +
+        '<h1 class="cal-title">Гонки</h1>' +
+        '<p class="cal-sub">Выбери гонку - внутри все её этапы. Навигация по треку пока доступна для REC.</p></div>' +
+      '<div class="champ-list">' + CHAMPS.map(champCard).join('') + '</div>';
+  }
+
+  function champEventsScreen(c) {
+    var dc = discColor(c.disc);
+    var head = '<button class="back-chip" data-champ-back="1"><span class="ico ico-15">' + ICON.back + '</span>Все гонки</button>' +
+      '<div class="cal-hero" style="margin-bottom:16px">' +
+        '<div class="eyebrow" style="color:' + dc + '">' + discLabel(c.disc) + ' · сезон ' + (window.REC ? REC.season : 2026) + '</div>' +
+        '<h1 class="cal-title">' + c.name + '</h1>' +
+        (c.nav
+          ? '<p class="cal-sub">Выбери этап - внутри карта автодрома, активности и расписание.</p>'
+          : '<p class="cal-sub">Навигация по треку пока доступна только для REC. Здесь - календарь этапов серии.</p>') +
+      '</div>';
+    if (c.useREC) return head + '<div class="stage-list">' + REC.stages.map(recStageCard).join('') + '</div>';
+    var evs = (c.events || []).slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    var cards = evs.map(function (e) {
+      return '<div class="ev-card" style="--disc:' + dc + '">' +
+        '<div class="ev-date">' + (e.dateLabel || fmtDate(e.date)) + '</div>' +
+        '<div class="ev-body"><div class="ev-name">' + e.name + '</div>' +
+        '<div class="ev-place"><span class="ico">' + ICON.pin + '</span>' + e.track + ' · ' + e.city + '</div></div></div>';
+    }).join('');
+    return head + '<div class="ev-list">' + cards + '</div>';
   }
 
   /* ======================= НАВИГАЦИЯ ПО ГОНКЕ ======================= */
@@ -381,8 +444,10 @@
     var knb = e.target.closest('[data-kn-back]'); if (knb) { state.articleSlug = null; render(); return; }
     var tkt = e.target.closest('[data-ticket]'); if (tkt) { state.ticket = tkt.getAttribute('data-ticket'); save(TICKET_KEY, state.ticket); render(); return; }
     var rs = e.target.closest('[data-race-sec]'); if (rs) { state.raceSection = rs.getAttribute('data-race-sec'); render(); return; }
+    var chb = e.target.closest('[data-champ-back]'); if (chb) { state.champId = null; render(); return; }
+    var chp = e.target.closest('[data-champ]'); if (chp) { state.champId = chp.getAttribute('data-champ'); render(); return; }
     var stg = e.target.closest('[data-stage]'); if (stg) { openStage(stg.getAttribute('data-stage')); return; }
-    var tb = e.target.closest('[data-tab]'); if (tb) { setTab(tb.getAttribute('data-tab')); return; }
+    var tb = e.target.closest('[data-tab]'); if (tb) { var tbid = tb.getAttribute('data-tab'); if (tbid === 'calendar' && tb.classList.contains('tab')) state.champId = null; setTab(tbid); return; }
   });
   document.addEventListener('change', function (e) {
     var el = e.target.closest('[data-toggle="hideread"]'); if (el) { state.hideRead = el.checked; render(); }
@@ -393,7 +458,8 @@
   function stillDeep() {
     return !!document.getElementById('sheetRoot') ||
       (state.tab === 'knowledge' && state.articleSlug) ||
-      state.tab !== 'calendar';
+      state.tab !== 'calendar' ||
+      (state.tab === 'calendar' && !!state.champId);
   }
   function armBack() { try { history.pushState({ sh: 1 }, ''); } catch (e) {} trapArmed = true; }
   function ensureTrap() { if (stillDeep() && !trapArmed) armBack(); }
@@ -401,6 +467,7 @@
     if (document.getElementById('sheetRoot')) { closeZoneSheet(); return true; }
     if (state.tab === 'knowledge' && state.articleSlug) { state.articleSlug = null; render(); return true; }
     if (state.tab !== 'calendar') { setTab('calendar'); return true; }
+    if (state.champId) { state.champId = null; render(); return true; }
     return false;
   }
   window.addEventListener('popstate', function () {
