@@ -60,6 +60,7 @@
     { id: 'knowledge', label: 'База знаний', icon: 'book' }
   ];
   var KIND_LABEL = { zone: 'Зона', show: 'Активности', kids: 'Детям', track: 'Трек и экскурсии', stand: 'Трибуна', service: 'Сервис', parking: 'Парковка', thrill: 'Аттракцион', inactive: 'Не используется' };
+  var MAP = null; // данные карты текущего этапа (зоны/декор/viewBox)
 
   function stageById(id) { for (var i = 0; i < stages.length; i++) { if (stages[i].id === id) return stages[i]; } return null; }
   function articleBySlug(slug) { for (var i = 0; i < arts.length; i++) { if (arts[i].slug === slug) return arts[i]; } return null; }
@@ -124,9 +125,11 @@
     var s = stageById(state.stageId) || stages[0];
     if (!s) return stub('pin', 'Этап не выбран', 'Открой «Календарь» и выбери гонку.');
     var d = window.STAGE1 || { zones: [], activities: [], schedule: [], links: [] };
-    var isMrw = s.venue === 'mrw';
+    var mapData = (s.venue === 'igora' && window.VENUE_IGORA) ? window.VENUE_IGORA : window.STAGE1;
+    MAP = mapData;
+    var hasMap = (s.venue === 'mrw' && window.STAGE1) || (s.venue === 'igora' && window.VENUE_IGORA);
     var note = s.stage !== 1
-      ? '<div class="race-note">Карта, активности и расписание показаны по образцу этапа 1 - для этого этапа детали будут уточнены.</div>' : '';
+      ? '<div class="race-note">Активности и расписание показаны по образцу этапа 1 - для этого этапа уточняются.</div>' : '';
     var ticketBar = '<div class="ticket-bar"><span class="ticket-lbl">Мой билет</span>' +
       '<div class="pills tpills">' + TICKETS.map(function (t) {
         return '<button class="pill' + (state.ticket === t ? ' active' : '') + '" data-ticket="' + t + '">' + t + '</button>';
@@ -138,7 +141,7 @@
     var content;
     if (state.raceSection === 'acts') content = actsView(d);
     else if (state.raceSection === 'sched') content = schedView(d);
-    else content = isMrw ? mapBlock(d)
+    else content = hasMap ? mapBlock(mapData)
       : stub('pin', 'Карта «' + s.track + '» - скоро', 'Интерактивная схема этого автодрома появится позже. Активности и расписание уже доступны на соседних вкладках.', 'Скоро');
 
     return '<div class="race-head">' +
@@ -152,12 +155,9 @@
   /* ---- карта ---- */
   function labelSize(z) { var s = Math.round(z.w * 1.7 / Math.max(z.label.length, 1)); return Math.max(13, Math.min(28, s)); }
   function mapSVG(d) {
-    var decor =
-      '<rect class="trk-asphalt" x="40" y="460" width="920" height="34" rx="5"/>' +
-      '<line class="trk-line" x1="55" y1="477" x2="945" y2="477"/>' +
-      '<text class="trk-label" x="500" y="483" text-anchor="middle" font-size="17">СТАРТ · ФИНИШ</text>';
+    var decor = d.decor || '';
     var zs = d.zones.map(function (z) {
-      var tap = (z.acts && z.acts.length) ? ' tappable' : '';
+      var tap = ((z.acts && z.acts.length) || z.desc) ? ' tappable' : '';
       var cx = z.x + z.w / 2, cy = z.y + z.h / 2;
       var avail = (z.acts || []).filter(function (id) { var a = actById(d, id); return a && availFor(a); }).length;
       var badge = avail
@@ -168,7 +168,7 @@
         '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-size="' + labelSize(z) + '">' + z.label + '</text>' +
         badge + '</g>';
     }).join('');
-    return '<svg viewBox="0 0 1000 660" preserveAspectRatio="xMidYMid meet"><g id="vp">' + decor + zs + '</g></svg>';
+    return '<svg viewBox="' + (d.vb || '0 0 1000 660') + '" preserveAspectRatio="xMidYMid meet"><g id="vp">' + decor + zs + '</g></svg>';
   }
   function mapBlock(d) {
     return '<div class="map-wrap" id="mapWrap">' + mapSVG(d) +
@@ -235,7 +235,7 @@
   /* ---- нижняя карточка зоны ---- */
   function openZoneSheet(id) {
     closeZoneSheet();
-    var d = window.STAGE1; if (!d) return;
+    var d = MAP || window.STAGE1; if (!d) return;
     var z = zoneById(d, id); if (!z) return;
     var all = (z.acts || []).map(function (aid) { return actById(d, aid); }).filter(Boolean);
     var inside = all.filter(availFor);
@@ -335,16 +335,18 @@
     var wrap = document.getElementById('mapWrap'); if (!wrap) return;
     var svg = wrap.querySelector('svg'); var vp = svg.querySelector('#vp');
     if (!svg || !vp) return;
+    var vb = (svg.getAttribute('viewBox') || '0 0 1000 660').split(/\s+/);
+    var VW = +vb[2] || 1000, VH = +vb[3] || 660;
     var t = { s: 1, x: 0, y: 0 };
-    function clamp() { var mx = (t.s - 1) * 1000, my = (t.s - 1) * 660; t.x = Math.min(0, Math.max(-mx, t.x)); t.y = Math.min(0, Math.max(-my, t.y)); }
+    function clamp() { var mx = (t.s - 1) * VW, my = (t.s - 1) * VH; t.x = Math.min(0, Math.max(-mx, t.x)); t.y = Math.min(0, Math.max(-my, t.y)); }
     function apply() { vp.setAttribute('transform', 'translate(' + t.x.toFixed(1) + ' ' + t.y.toFixed(1) + ') scale(' + t.s.toFixed(3) + ')'); }
-    function zoom(dir) { var ns = Math.min(3, Math.max(1, t.s * (dir > 0 ? 1.45 : 1 / 1.45))); var cx = 500, cy = 330; t.x = cx - (cx - t.x) * (ns / t.s); t.y = cy - (cy - t.y) * (ns / t.s); t.s = ns; clamp(); apply(); }
+    function zoom(dir) { var ns = Math.min(3, Math.max(1, t.s * (dir > 0 ? 1.45 : 1 / 1.45))); var cx = VW / 2, cy = VH / 2; t.x = cx - (cx - t.x) * (ns / t.s); t.y = cy - (cy - t.y) * (ns / t.s); t.s = ns; clamp(); apply(); }
     wrap.querySelectorAll('[data-zoom]').forEach(function (b) { b.addEventListener('click', function () { zoom(b.getAttribute('data-zoom') === 'in' ? 1 : -1); }); });
     var drag = null, moved = 0;
     svg.addEventListener('pointerdown', function (e) { drag = { px: e.clientX, py: e.clientY, x: t.x, y: t.y }; moved = 0; try { svg.setPointerCapture(e.pointerId); } catch (_) {} });
     svg.addEventListener('pointermove', function (e) {
       if (!drag) return;
-      var k = 1000 / (svg.clientWidth || 360);
+      var k = VW / (svg.clientWidth || 360);
       moved = Math.max(moved, Math.abs(e.clientX - drag.px) + Math.abs(e.clientY - drag.py));
       t.x = drag.x + (e.clientX - drag.px) * k; t.y = drag.y + (e.clientY - drag.py) * k; clamp(); apply();
     });

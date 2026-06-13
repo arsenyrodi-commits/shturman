@@ -91,5 +91,10 @@
     { label: 'Сайт Russian Endurance Challenge', url: 'https://rusendurance.com' }
   ];
 
-  window.STAGE1 = { zones: zones, activities: activities, schedule: schedule, links: links };
+  var decor =
+    '<rect class="trk-asphalt" x="40" y="460" width="920" height="34" rx="5"/>' +
+    '<line class="trk-line" x1="55" y1="477" x2="945" y2="477"/>' +
+    '<text class="trk-label" x="500" y="483" text-anchor="middle" font-size="17">СТАРТ · ФИНИШ</text>';
+
+  window.STAGE1 = { vb: '0 0 1000 660', decor: decor, zones: zones, activities: activities, schedule: schedule, links: links };
 })();
