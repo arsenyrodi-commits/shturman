@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+  <title>Штурман - навигатор зрителя на гонках</title>
+  <meta name="description" content="Навигатор зрителя на автоспортивных событиях: календарь этапов, карта автодрома, расписание и база знаний. MVP на данных Russian Endurance Challenge." />
+  <meta name="theme-color" content="#0E0E11" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- VK Bridge (вне VK просто не активируется - приложение работает и в браузере) -->
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
+  <!-- данные -->
+  <script src="assets/data/rec.js"></script>
+  <script src="assets/data/articles.js"></script>
+  <script src="assets/data/stage1.js"></script>
+
+  <script src="assets/js/vk.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
