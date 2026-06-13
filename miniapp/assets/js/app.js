@@ -99,6 +99,7 @@
       var num = (s.stage < 10 ? '0' : '') + s.stage;
       return '<a class="stage-card' + (st.cls === 'next' ? ' is-next' : '') + '" data-stage="' + s.id + '">' +
         '<div class="stage-media">' +
+          '<img class="stage-img" src="assets/img/stages/' + s.id + '.jpg" alt="" loading="lazy" onerror="' + IMG_FALLBACK + '">' +
           '<span class="stage-badge">Этап ' + s.stage + '</span>' +
           '<span class="stage-status s-' + st.cls + '">' + st.label + '</span>' +
           '<span class="stage-num">' + num + '</span></div>' +

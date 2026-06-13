@@ -137,28 +137,33 @@ body {
 }
 
 .stage-media {
-  position: relative; height: 96px; overflow: hidden;
+  position: relative; height: 116px; overflow: hidden;
   background: linear-gradient(120deg, #15151a 0%, #23232c 55%, #38241a 100%);
   display: flex; align-items: flex-start; padding: 12px;
 }
+.stage-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 .stage-media::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(120% 140% at 92% 130%, rgba(255, 77, 20, .38), transparent 56%);
 }
+.stage-media::after {
+  content: ''; position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg, rgba(14, 14, 17, .12) 30%, rgba(14, 14, 17, .55));
+}
 .stage-num {
-  position: absolute; right: 12px; bottom: -16px;
+  position: absolute; right: 12px; bottom: -16px; z-index: 2;
   font-family: var(--font-display); font-size: 78px; line-height: 1;
-  color: rgba(244, 241, 234, .10);
+  color: rgba(244, 241, 234, .12);
 }
 .stage-badge {
-  position: relative; z-index: 1;
+  position: relative; z-index: 3;
   font-family: var(--font-head); font-weight: 800; font-size: 11px; letter-spacing: .05em;
   color: var(--cream); background: rgba(255, 255, 255, .14);
   border: 1px solid rgba(255, 255, 255, .2);
   padding: 4px 10px; border-radius: 20px;
 }
 .stage-status {
-  position: absolute; top: 12px; right: 12px; z-index: 1;
+  position: absolute; top: 12px; right: 12px; z-index: 3;
   font-family: var(--font-head); font-weight: 800; font-size: 10.5px;
   letter-spacing: .04em; text-transform: uppercase;
   padding: 4px 9px; border-radius: 20px;
