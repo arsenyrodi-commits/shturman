@@ -1,4 +1,4 @@
-/* Главная — динамические блоки: ближайшее событие, афиша, статьи. */
+/* Главная - динамические блоки: ближайшее событие, афиша, статьи. */
 window.PAGE_INIT = function () {
   var all = (window.SHTURMAN && window.SHTURMAN.events) || [];
   var today = new Date(); today.setHours(0, 0, 0, 0);

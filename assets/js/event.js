@@ -1,4 +1,4 @@
-/* Страница события — рендер по ?id= */
+/* Страница события - рендер по ?id= */
 window.PAGE_INIT = function () {
   var root = document.getElementById('event-root');
   var id = SH.qs('id');
@@ -15,7 +15,7 @@ window.PAGE_INIT = function () {
     return;
   }
 
-  document.title = ev.title + ' — Штурман';
+  document.title = ev.title + ' - Штурман';
   var d = SH.disc(ev.discipline);
   function variant(url, sfx) { return url.replace(/\.jpg$/i, '-' + sfx + '.jpg'); }
   var img2 = variant(ev.image, '2');
@@ -85,7 +85,7 @@ window.PAGE_INIT = function () {
       '<div class="grid lg:grid-cols-[1.6fr_1fr] gap-12 items-start">' +
         '<div>' +
           '<div class="reveal"><div class="eyebrow" style="color:var(--orange)">Что это за гонка</div>' +
-            '<h2 class="mt-4 mb-3" style="font-size:clamp(24px,3.4vw,36px)">' + d.label + ' — ' + d.tagline.toLowerCase() + '</h2>' +
+            '<h2 class="mt-4 mb-3" style="font-size:clamp(24px,3.4vw,36px)">' + d.label + ' - ' + d.tagline.toLowerCase() + '</h2>' +
             '<p class="text-inktext-dim text-[17px]">' + d.about + '</p>' +
             '<p class="text-inktext-dim text-[17px] mt-4">' + ev.about + '</p>' +
           '</div>' +
@@ -130,7 +130,7 @@ window.PAGE_INIT = function () {
           '</div>' +
           '<div class="card card-dark mt-5 p-6 theme-dark">' +
             '<div class="flex items-center gap-2 text-orange-300 text-[13px] mb-2" style="font-family:var(--font-head);font-weight:700;letter-spacing:.08em;text-transform:uppercase"><span class="w-2 h-2 rounded-full pulse" style="background:var(--orange)"></span> На событии</div>' +
-            '<p class="text-cream text-[15.5px]">Не теряйся на автодроме: карта, расписание и маршрут — в мини-приложении «Штурман».</p>' +
+            '<p class="text-cream text-[15.5px]">Не теряйся на автодроме: карта, расписание и маршрут - в мини-приложении «Штурман».</p>' +
             '<a class="link-arrow text-orange-300 mt-4 text-[14px]" href="app.html">Открыть приложение ' + I.arrow + '</a>' +
           '</div>' +
         '</aside>' +

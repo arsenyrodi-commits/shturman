@@ -1,4 +1,4 @@
-/* Tailwind Play CDN config — бренд «Штурман».
+/* Tailwind Play CDN config - бренд «Штурман».
    Подключается СРАЗУ после <script src="https://cdn.tailwindcss.com">. */
 tailwind.config = {
   theme: {

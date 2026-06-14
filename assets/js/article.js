@@ -1,4 +1,4 @@
-/* Статья — рендер по ?slug= */
+/* Статья - рендер по ?slug= */
 window.PAGE_INIT = function () {
   var root = document.getElementById('article-root');
   var slug = SH.qs('slug');
@@ -15,7 +15,7 @@ window.PAGE_INIT = function () {
     return;
   }
 
-  document.title = a.title + ' — Штурман';
+  document.title = a.title + ' - Штурман';
 
   function block(b) {
     if (b.type === 'h') return '<h2 class="mt-11 mb-1 text-balance" style="font-size:clamp(23px,3.2vw,32px)">' + b.text + '</h2>';

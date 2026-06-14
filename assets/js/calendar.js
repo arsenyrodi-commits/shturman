@@ -1,4 +1,4 @@
-/* Календарь — фасетные фильтры (дисциплина, регион, цена, месяц, поиск). */
+/* Календарь - фасетные фильтры (дисциплина, регион, цена, месяц, поиск). */
 window.PAGE_INIT = function () {
   var EV = (window.SHTURMAN && window.SHTURMAN.events) || [];
   var REGIONS = (window.SHTURMAN && window.SHTURMAN.regions) || [];

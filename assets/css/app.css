@@ -1,5 +1,5 @@
 /* ============================================================
-   ШТУРМАН — design system / app.css
+   ШТУРМАН - design system / app.css
    Шрифты: Russo One (display) · Manrope (headings/UI) · Inter (body)
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Russo+One&display=swap');
@@ -141,11 +141,11 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 800; letter-spacing
 .card-dark { background: var(--ink-2); border-color: var(--line-dark); }
 .card-dark:hover { border-color: #3a3a45; box-shadow: 0 22px 50px -20px rgba(0,0,0,.6); }
 
-/* светлая карточка — всегда тёмный текст, даже внутри тёмной секции
+/* светлая карточка - всегда тёмный текст, даже внутри тёмной секции
    (иначе заголовок floating-карточки «Ближайшее событие» наследует кремовый и не виден) */
 .card:not(.card-dark) { color: var(--ink-text); }
 
-/* дата поверх фото карточки — читаемая плашка на любом снимке */
+/* дата поверх фото карточки - читаемая плашка на любом снимке */
 .card-date {
   display: inline-flex; align-items: center; gap: 7px; line-height: 1;
   font-family: var(--font-head); font-weight: 700; font-size: 14px; color: #fff;
@@ -294,12 +294,12 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 800; letter-spacing
 @media (prefers-reduced-motion: reduce) { .hero-video { display: none; } }
 
 /* ============================================================
-   MOBILE — самостоятельная мобильная вёрстка (не сжатие десктопа).
+   MOBILE - самостоятельная мобильная вёрстка (не сжатие десктопа).
    Решения под палец: крупные тап-зоны, тап-фидбэк вместо hover,
    свайп-фильтры, липкая кнопка действия, свой типографический ритм.
    ============================================================ */
 @media (max-width: 768px) {
-  /* инпуты ≥16px — iOS не зумит при фокусе */
+  /* инпуты ≥16px - iOS не зумит при фокусе */
   .field { font-size: 16px; }
 
   /* контейнер и вертикальный ритм */
@@ -324,17 +324,17 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 800; letter-spacing
   /* кнопки чуть компактнее по высоте */
   .btn-lg { padding: 15px 22px; }
 
-  /* NAV — плотнее под телефон */
+  /* NAV - плотнее под телефон */
   .nav { top: 10px; }
   .nav-inner { padding: 9px 10px 9px 18px; }
   .brand { font-size: 18px; }
   .brand .mark { width: 26px; height: 26px; }
 
-  /* HERO — управляемый размер заголовка на всех страницах */
+  /* HERO - управляемый размер заголовка на всех страницах */
   header .display { font-size: clamp(38px, 12vw, 58px) !important; }
   .marquee-track { font-size: 15px; }
 
-  /* CALENDAR — фильтры свайпом по горизонтали, а не переносом в 4 ряда */
+  /* CALENDAR - фильтры свайпом по горизонтали, а не переносом в 4 ряда */
   #disc-chips, #price-chips {
     flex-wrap: nowrap;
     overflow-x: auto;

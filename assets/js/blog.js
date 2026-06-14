@@ -1,4 +1,4 @@
-/* База знаний — редакторский список + фильтр по категориям. */
+/* База знаний - редакторский список + фильтр по категориям. */
 window.PAGE_INIT = function () {
   var ARTS = (window.SHTURMAN && window.SHTURMAN.articles) || [];
   var I = SH.ICON;

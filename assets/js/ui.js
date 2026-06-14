@@ -1,6 +1,6 @@
 /* ============================================================
-   ШТУРМАН — общий UI-слой: навбар, футер, анимации, карточки.
-   window.SH — публичные хелперы для страничных скриптов.
+   ШТУРМАН - общий UI-слой: навбар, футер, анимации, карточки.
+   window.SH - публичные хелперы для страничных скриптов.
    ============================================================ */
 (function () {
   'use strict';
@@ -160,7 +160,7 @@
           '<div class="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">' +
             '<div>' +
               '<a class="brand text-[26px]" href="index.html">' + ICON.mark + 'Штурман</a>' +
-              '<p class="text-cream-dim mt-5 max-w-sm text-[15.5px]">Твой навигатор в мире автоспорта. Все гонки России — ралли, дрифт, кольцо и мото — в одном месте.</p>' +
+              '<p class="text-cream-dim mt-5 max-w-sm text-[15.5px]">Твой навигатор в мире автоспорта. Все гонки России - ралли, дрифт, кольцо и мото - в одном месте.</p>' +
               '<div class="flex gap-3 mt-6">' +
                 '<a href="https://t.me/daryashilyagina" target="_blank" rel="noopener" aria-label="Telegram" class="w-11 h-11 rounded-full flex items-center justify-center" style="background:rgba(244,241,234,.08);border:1px solid var(--line-dark)"><span class="w-5 h-5 inline-flex text-cream">' + ICON.tg + '</span></a>' +
               '</div>' +
@@ -178,7 +178,7 @@
           '<div class="footer-mega mt-14 text-center md:text-left">ШТУРМАН</div>' +
           '<div class="flex flex-col md:flex-row gap-3 justify-between items-center pt-8 mt-2 text-cream-faint text-[13.5px]" style="border-top:1px solid var(--line-dark)">' +
             '<span>© 2026 Штурман. Демо-версия MVP.</span>' +
-            '<span>Данные о событиях — ориентировочные, сезон 2026.</span>' +
+            '<span>Данные о событиях - ориентировочные, сезон 2026.</span>' +
           '</div>' +
         '</div>' +
       '</footer>';
