@@ -69,6 +69,18 @@
     { id: 'profile', label: 'Профиль', icon: 'user' }
   ];
   var KIND_LABEL = { zone: 'Зона', show: 'Активности', kids: 'Детям', track: 'Трек и экскурсии', stand: 'Трибуна', service: 'Сервис', parking: 'Парковка', thrill: 'Аттракцион', inactive: 'Не используется' };
+  /* мини-иконки для легенды под картой (раздел «Обозначения») */
+  var LEG_ICON = {
+    stand:  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12h12M3.4 12 5 8h6l1.6 4"/><path d="M5.5 12V9.4M8 12V8.7M10.5 12V9.4"/></svg>',
+    view:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="9.2" r="2.3"/><circle cx="11" cy="9.2" r="2.3"/><path d="M5.2 6.9 6.3 4h3.4l1.1 2.9"/></svg>',
+    under:  '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="3.2" r="1.4"/><path d="M8 4.8v4.4M5.6 7h4.8M8 9.2l-2 4.4M8 9.2l2 4.4"/></svg>',
+    tunnel: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.8 13V8a5.2 5.2 0 0 1 10.4 0v5"/><path d="M6 13v-3a2 2 0 0 1 4 0v3"/></svg>',
+    park:   '<svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="13" height="13" rx="3.5" fill="#2E6BB8"/><text x="8" y="11.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" font-family="Manrope,sans-serif">P</text></svg>',
+    enter:  '<svg viewBox="0 0 16 16"><path d="M8 1.4c2.5 0 4.4 1.9 4.4 4.4 0 3-4.4 8.3-4.4 8.3S3.6 8.8 3.6 5.8C3.6 3.3 5.5 1.4 8 1.4Z" fill="#FF4D14"/><circle cx="8" cy="5.8" r="1.7" fill="#fff"/></svg>',
+    bus:    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.6" y="2.8" width="10.8" height="8.4" rx="1.6"/><path d="M2.6 8h10.8"/><circle cx="5" cy="12.4" r="1"/><circle cx="11" cy="12.4" r="1"/></svg>',
+    food:   '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M5 2v12M3.8 2v3.2a1.2 1.2 0 0 0 2.4 0V2M11 2c-1.1 0-1.8 1.3-1.8 2.9 0 1.2.8 2.1 1.8 2.3V14"/></svg>',
+    dot:    '<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="currentColor"/></svg>'
+  };
   var MAP = null; // данные карты текущего этапа (зоны/декор/viewBox)
 
   function stageById(id) { for (var i = 0; i < stages.length; i++) { if (stages[i].id === id) return stages[i]; } return null; }
@@ -226,6 +238,25 @@
   /* ---- карта ---- */
   function labelSize(z) { var s = Math.round(z.w * 1.7 / Math.max(z.label.length, 1)); return Math.max(13, Math.min(28, s)); }
   function mapSVG(d) {
+    /* режим «карта-картинка»: реальный план как подложка + невидимые тап-зоны */
+    if (d.img) {
+      var hot = d.zones.map(function (z) {
+        var tap = ((z.acts && z.acts.length) || z.desc) ? ' tappable' : '';
+        var shape = z.polys
+          ? z.polys.map(function (r) {
+              return '<polygon points="' + r.map(function (p) { return p[0] + ',' + p[1]; }).join(' ') + '"/>';
+            }).join('')
+          : '<rect x="' + z.x + '" y="' + z.y + '" width="' + z.w + '" height="' + z.h + '" rx="7"/>';
+        var hl = z.hlImg
+          ? '<image class="hl-img" href="' + z.hlImg + '" xlink:href="' + z.hlImg + '" x="0" y="0" width="' + d.img.w + '" height="' + d.img.h + '"/>'
+          : '';
+        return '<g class="zone hot z-' + z.kind + (z.hlImg ? ' has-hl' : '') + tap + '" data-zone="' + z.id + '">' +
+          hl + shape + '</g>';
+      }).join('');
+      return '<svg viewBox="' + (d.vb || '0 0 1062 454') + '" preserveAspectRatio="xMidYMid meet"><g id="vp">' +
+        '<image href="' + d.img.href + '" xlink:href="' + d.img.href + '" x="0" y="0" width="' + d.img.w + '" height="' + d.img.h + '"/>' +
+        hot + '</g></svg>';
+    }
     var decor = d.decor || '';
     var zs = d.zones.map(function (z) {
       var tap = ((z.acts && z.acts.length) || z.desc) ? ' tappable' : '';
@@ -241,10 +272,23 @@
     }).join('');
     return '<svg viewBox="' + (d.vb || '0 0 1000 660') + '" preserveAspectRatio="xMidYMid meet"><g id="vp">' + decor + zs + '</g></svg>';
   }
+  function legendBlock(d) {
+    if (!d.legend) return '';
+    var tracks = (d.legend.tracks || []).map(function (r) {
+      return '<div class="leg-row"><span class="leg-sw" style="background:' + r.c + '"></span>' + r.t + '</div>';
+    }).join('');
+    var marks = (d.legend.marks || []).map(function (r) {
+      return '<div class="leg-row"><span class="leg-ic">' + (LEG_ICON[r.ic] || LEG_ICON.dot) + '</span>' + r.t + '</div>';
+    }).join('');
+    return '<div class="map-legend">' +
+      '<div class="leg-col"><h5>Трассы и площадки</h5>' + tracks + '</div>' +
+      '<div class="leg-col"><h5>Обозначения</h5>' + marks + '</div></div>';
+  }
   function mapBlock(d) {
-    return '<div class="map-wrap" id="mapWrap">' + mapSVG(d) +
+    return '<div class="map-wrap' + (d.img ? ' map-img' : '') + '" id="mapWrap">' + mapSVG(d) +
       '<div class="map-zoom"><button data-zoom="in" aria-label="Приблизить">+</button><button data-zoom="out" aria-label="Отдалить">−</button></div></div>' +
-      '<div class="map-hint">Тапни зону · тяни, чтобы двигать · +/− зум</div>';
+      '<div class="map-hint">Тапни объект · тяни, чтобы двигать · +/− зум</div>' +
+      legendBlock(d);
   }
 
   /* ---- активности (чек-лист) ---- */

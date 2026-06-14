@@ -329,6 +329,18 @@ body {
 .zone.tappable:active rect { filter: brightness(.94); }
 .zone.selected rect { stroke: var(--orange); stroke-width: 3.5; }
 
+/* карта-картинка: реальный план + тап-зоны по контуру поверх */
+.map-img svg image { -webkit-user-select: none; user-select: none; pointer-events: none; }
+.zone.hot rect, .zone.hot polygon { fill: rgba(0, 0, 0, 0); stroke: none; pointer-events: all; transition: fill .12s, stroke .12s; }
+.zone.hot.tappable:active rect, .zone.hot.tappable:active polygon,
+.zone.hot.selected rect, .zone.hot.selected polygon {
+  fill: rgba(255, 77, 20, .20); stroke: var(--orange); stroke-width: 3; stroke-linejoin: round;
+}
+/* трасса: подсветка идёт картинкой-лентой, саму хит-петлю не заливаем */
+.zone.hot.has-hl.tappable:active polygon, .zone.hot.has-hl.selected polygon { fill: rgba(0, 0, 0, 0); stroke: none; }
+.zone .hl-img { display: none; pointer-events: none; }
+.zone.has-hl.tappable:active .hl-img, .zone.has-hl.selected .hl-img { display: block; }
+
 .z-zone rect { fill: #d3e9da; }
 .z-show rect { fill: #ffd8c6; }
 .z-kids rect { fill: #e6d4f4; }
@@ -357,6 +369,20 @@ body {
 }
 .map-hint {
   margin-top: 10px; text-align: center; font-size: 12px; color: var(--text-faint);
+}
+
+/* легенда под картой */
+.map-legend { display: grid; grid-template-columns: 1fr; gap: 16px; margin: 16px 2px 2px; }
+.map-legend h5 {
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-faint); font-weight: 800; margin-bottom: 9px;
+}
+.leg-row { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-dim); padding: 3px 0; }
+.leg-sw { flex: none; width: 22px; height: 13px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(20, 20, 30, .07); }
+.leg-ic { flex: none; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-dim); }
+.leg-ic svg { width: 100%; height: 100%; display: block; }
+@media (min-width: 360px) {
+  .map-legend { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
 }
 
 /* нижняя карточка зоны (bottom sheet) */
